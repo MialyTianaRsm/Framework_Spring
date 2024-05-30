@@ -15,6 +15,7 @@ for /R "%SRC_DIR%" %%f in (*.java) do (
 )
 :: Compile the code
 cd "%TMP_DIR%"
+@REM javac -cp "%BIN_DIR%;%LIB_DIR%\servlet-api.jar" -d "%BIN_DIR%" "%SRC_DIR%\annotation\*.java" "%SRC_DIR%\util\*.java" "%SRC_DIR%\mg\itu\prom16\*.java" 
 javac -d "%BIN_DIR%" -cp "%LIB_DIR%/*" "*.java"
 :: Create the jar
 cd "%BIN_DIR%"

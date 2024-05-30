@@ -2,9 +2,12 @@ package util ;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Vector;
 
+import annotation.Get;
 
 public class Utilitaire {
     public String modifyPath (String path) {
@@ -68,5 +71,42 @@ public class Utilitaire {
         }
         return controllers ; 
         
+    }
+
+    public HashMap<String , Mapping> getMapping (String packageName , Class<?extends Annotation> annotation) throws ClassNotFoundException{
+        Vector<String> controllerList = getList(packageName, annotation);
+        System.out.println(controllerList);
+        HashMap<String,Mapping> classesList = new HashMap<>();
+        for( int i = 0 ; i < controllerList.size() ; i++){
+            try {
+                String className = controllerList.get(i) ; 
+                Class<?> clazz = Class.forName(className);
+                Method[] method = clazz.getDeclaredMethods();
+                for(int j = 0 ; j < method.length ; j++){
+                    if(method[j].isAnnotationPresent(Get.class)){
+                        Mapping value = new Mapping(className, method[j].getName());
+                        String key = method[j].getAnnotation(Get.class).value();
+                        classesList.put(key, value) ; 
+                         System.out.println(key);
+                         System.out.println(value.getClassName());
+                         System.out.println(value.getMethodName());
+                    }
+                }            
+            }catch(Exception e){
+
+            }
+        }
+        return classesList ; 
+    }
+
+    public String modified_url (String url){
+        String newUrl = "/";
+        String[] path1 = url.split("//");
+        String[] path = path1[1].split("/");
+        for(int i = 2 ; i < path.length ; i++){
+            newUrl += path[i]+"/";
+        }
+        url = newUrl.substring( 0 , newUrl.length()-1);
+        return url ;
     }
 }

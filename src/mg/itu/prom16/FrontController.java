@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import annotation.Controller;
 import annotation.Get;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,48 +19,53 @@ import util.Utilitaire;
 
 public class FrontController extends HttpServlet {
     HashMap<String , Mapping> urlMapping ; 
-    Vector<String> controllers ; 
+    String huhu ; 
 
     public void init(){
-        urlMapping = new HashMap<>();
+        String packageName = this.getInitParameter("package"); 
+        huhu = packageName ; 
+        Utilitaire util = new Utilitaire();
         try{
-            controllers = new Utilitaire().getList(this.getInitParameter("package"), Controller.class);
+            // urlMapping = util.getMapping(packageName, Controller.class);
+            urlMapping = new HashMap<String , Mapping>();
+            urlMapping.put("/get", new Mapping("ControllerTest", "getMethod"));
+            
         }catch(Exception e){
-            throw new RuntimeException();
+            System.out.println(e.getMessage());
+        
         }
-        try {
-            for(String controller : controllers){
-                Class<?> clazz = Class.forName(controller);
-                for (Method method : clazz.getDeclaredMethods()){
-                    if(method.isAnnotationPresent(Get.class)){
-                        Get getAnnotation = method.getAnnotation(Get.class);
-                        String url = getAnnotation.value(); 
-                        urlMapping.put(url , new Mapping(controller, method.getName()));
-                    }
-                }
-            }
-        }catch(Exception e){
-            throw new RuntimeException();
-        }
+
     }
  
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ClassNotFoundException {
-        // try (PrintWriter out = response.getWriter()) {
-        //   out.println("Tonga etooooo!");
-        // } catch (Exception e) {
-        //     e.printStackTrace(response.getWriter());
-        // }
         PrintWriter out = response.getWriter();
-        String path = request.getRequestURI().substring(request.getContextPath().length());
-        Mapping mapping = urlMapping.get(path);
-        if(mapping != null){
-            out.println("url : "+path);
-            out.println("mapping : "+ mapping);
-        }else {
-            out.print("Pas de methode");
+        out.println("Processing request...");
+        out.println("huhu"+huhu);
+        String url = new Utilitaire().modified_url(request.getRequestURL().toString());
+        out.println("Modified URL: " + url);
+        out.println(urlMapping);
+        Mapping mapping = urlMapping.get(url);
+        
+        if (mapping == null) {
+            out.println("No mapping found for URL: " + url);
+            return;
         }
-
+    
+        out.println("Class Name: " + mapping.getClassName());
+        out.println("Method Name: " + mapping.getMethodName());
+        
+        try {
+            Class<?> clazz = Class.forName(mapping.getClassName());
+            Object instance = clazz.getDeclaredConstructor().newInstance();
+            Method method = clazz.getDeclaredMethod(mapping.getMethodName());
+            String result = (String) method.invoke(instance);
+            out.println("Result: " + result);
+        } catch (Exception e) {
+            out.println("Exception: " + e.getMessage());
+            e.printStackTrace(out);
+        }
     }
+    
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
