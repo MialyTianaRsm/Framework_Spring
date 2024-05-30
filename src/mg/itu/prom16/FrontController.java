@@ -34,7 +34,7 @@ public class FrontController extends HttpServlet {
         //   out.println("Tonga etooooo!");
         // } catch (Exception e) {
         //     e.printStackTrace(response.getWriter());
-        // }
+        // // }
         PrintWriter out = response.getWriter();
         if(!isChecked){
             init();
