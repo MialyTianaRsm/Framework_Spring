@@ -2,6 +2,10 @@ package util ;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 
@@ -39,5 +43,18 @@ public class Utilitaire {
         }
         return controllers ; 
         
+    }
+
+    public static List<Method> getClassMethodsWithAnnotation(Class<?> clazz, Class<? extends Annotation> annotation) {
+        List<Method> methods = new ArrayList<>();
+        Method[] classMethods = clazz.getDeclaredMethods();
+
+        for (Method method : classMethods) {
+            if (method.isAnnotationPresent(annotation)) {
+                methods.add(method);
+            }
+        }
+    
+        return methods;
     }
 }
