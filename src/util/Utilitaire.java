@@ -10,13 +10,13 @@ import java.util.Vector;
 
 
 public class Utilitaire {
-    public String modifyPath (String path) {
+    public static String modifyPath (String path) {
         path = path.substring(1);
         path = path.replace("%20", " ");
         return path ; 
     }
 
-    public Vector<String> getListController(String packageName , Class<? extends Annotation> annotation) throws ClassNotFoundException {
+    public static Vector<String> getListController(String packageName , Class<? extends Annotation> annotation) throws ClassNotFoundException {
         Vector<String> controllers = new Vector<String>();
         packageName.replace(".", "/");
         try{
@@ -24,7 +24,7 @@ public class Utilitaire {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             java.net.URL source = classLoader.getResource(packageName);
     
-            String realPath = this.modifyPath(source.getFile());
+            String realPath = modifyPath(source.getFile());
     
             File classPathDirectory = new File(realPath);
             if(classPathDirectory.isDirectory()){
