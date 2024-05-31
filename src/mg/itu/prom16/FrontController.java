@@ -1,17 +1,14 @@
 package mg.itu.prom16;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
 import annotation.Controller;
 import data.Mapping;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +29,6 @@ public class FrontController extends HttpServlet {
 
             for (String controller : controllers) {
                 Class<?> clazz = Class.forName(controller);
-                String className = clazz.getName();
                 List<Method> classMethods = Utilitaire.getClassMethodsWithAnnotation(clazz, Get.class);
                 for (Method method : classMethods) {
                     String annotationValue = method.getAnnotation(Get.class).value();
@@ -75,7 +71,6 @@ public class FrontController extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ClassNotFoundException | ServletException | IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -86,7 +81,6 @@ public class FrontController extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (ClassNotFoundException | ServletException | IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
