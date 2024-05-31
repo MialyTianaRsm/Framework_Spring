@@ -15,14 +15,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import util.Utilitaire;
 
 public class FrontController extends HttpServlet {
-    String packagePath;
-    boolean isChecked;
-    Vector<String> controllers;
 
     public void init() {
         try {
-            controllers = new Utilitaire().getListController(this.getInitParameter("package"), Controller.class);
-            isChecked = true;
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -31,14 +26,6 @@ public class FrontController extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ClassNotFoundException {
         PrintWriter out = response.getWriter();
-        if (!isChecked) {
-            init();
-        } else {
-            for (int i = 0; i < controllers.size(); i++) {
-                out.println(controllers.get(i));
-            }
-        }
-
     }
 
     @Override
