@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import util.Mapping;
+import util.ModelAndView;
 import util.Utilitaire;
 
 import annotation.Get;
@@ -36,7 +37,6 @@ public class FrontController extends HttpServlet {
                     temp.put(annotationValue, new Mapping(controller, method.getName()));
                 }
             }
-
             setUrlMappings(temp);
         } catch (Exception e) {
             throw new RuntimeException();
@@ -54,10 +54,19 @@ public class FrontController extends HttpServlet {
             if (mapping != null) {
                 Class<?> clazz = Class.forName(mapping.getClassName());
                 Method method = clazz.getMethod(mapping.getMethodName());
-
-                String result = method.invoke(clazz.getConstructor().newInstance()).toString();
-
-                out.println(result);
+                Object result = method.invoke(clazz.getConstructor().newInstance());
+                if(result instanceof String){
+                    out.println(result);
+                }else if(result instanceof ModelAndView){
+                    ModelAndView modelAndView = (ModelAndView)result;
+                    HashMap<String , Object> data = modelAndView.getData(); 
+                    for(String key : data.keySet()){
+                        request.setAttribute(key, data.get(key));
+                    }
+                    request.getRequestDispatcher(modelAndView.getUrl()).forward(request, response);
+                }else{
+                    System.out.println("not recognized");
+                }
             } else {
                 out.println("Url not found");
             }
