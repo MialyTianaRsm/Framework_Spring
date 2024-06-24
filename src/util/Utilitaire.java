@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.CharacterAction;
+
 import annotation.Get;
 
 import exception.*;
@@ -77,5 +79,9 @@ public class Utilitaire {
             }
         }
         return temp;
+    }
+
+    public static String getSetterName (String fieldName) {
+        return "set"+Character.toUpperCase(fieldName.charAt(0))+fieldName.substring(1) ; 
     }
 }
