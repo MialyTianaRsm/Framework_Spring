@@ -73,7 +73,7 @@ public class Utilitaire {
                 if (temp.containsKey(annotationValue)) {
                     throw new DuplicateUrlException("Duplicate Url");
                 }
-                temp.put(annotationValue, new Mapping(controller, method.getName()));
+                temp.put(annotationValue, new Mapping(controller, method));
             }
         }
         return temp;
