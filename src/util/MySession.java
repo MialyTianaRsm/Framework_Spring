@@ -4,7 +4,7 @@ package util;
 import jakarta.servlet.http.HttpSession;
 
 public class MySession {
-    private HttpSession session;
+    HttpSession session;
 
     public MySession(HttpSession session) {
         this.session = session;

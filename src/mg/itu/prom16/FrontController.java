@@ -44,6 +44,7 @@ public class FrontController extends HttpServlet {
         PrintWriter out = response.getWriter();
         String url = scanner.conform_url(request.getRequestURL().toString());
         Mapping mapping = urlMappings.get(url);
+            out.println(mapping);
         if (mapping == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "URL not mapped.");
             return;
@@ -88,37 +89,35 @@ public class FrontController extends HttpServlet {
                         }
                     }
                     String paramValue = request.getParameter(paramName);
-                    datasetter.invoke(mydataholder,
-                            TypeConverter.convertParameter(datasetter.getParameterTypes()[0], paramValue));
+                    datasetter.invoke(mydataholder,TypeConverter.convertParameter(datasetter.getParameterTypes()[0], paramValue));
                 } else {
                     String paramValue = request.getParameter(paramName);
                     objets.put(paramName, paramValue);
                 }
             }
+            
+            MySession session = new MySession(request.getSession());
+            objets.put("session", session);
+
             List<Object> methodArgs = new ArrayList<>();
             for (Parameter parameter : method.getParameters()) {
-                String paramName = "";
                 if (parameter.getType().equals(MySession.class)) {
-                methodArgs.add(new MySession(request.getSession()));
-                continue;
+                    methodArgs.add(new MySession(request.getSession()));
+                    
+                }else{
+                    String paramName = parameter.isAnnotationPresent(ReqParam.class) ? parameter.getAnnotation(ReqParam.class).value() : parameter.getName() ;
+                    methodArgs.add(objets.get(paramName)) ;  
                 }
 
-                if (parameter.isAnnotationPresent(ReqParam.class)) {
-                    paramName = parameter.getAnnotation(ReqParam.class).value();
-                } else {
-                    request.setAttribute("error", "ETU002593 erreur");
-                    RequestDispatcher dispatch = request.getRequestDispatcher("error.jsp");
-                    dispatch.forward(request, response);
-
-                }
-                methodArgs.add(objets.get(paramName));
             }
             Object result = method.invoke(instance, methodArgs.toArray());
             if (result instanceof String) {
                 out.println(result);
             } else if (result instanceof ModelAndView) {
                 ModelAndView mv = (ModelAndView) result;
-                mv.getData().forEach(request::setAttribute);
+                if(mv.getData() != null ) {
+                    mv.getData().forEach(request::setAttribute);
+                }
                 RequestDispatcher dispatcher = request.getRequestDispatcher(mv.getUrl());
                 dispatcher.forward(request, response);
             } else {
@@ -127,7 +126,8 @@ public class FrontController extends HttpServlet {
         } catch (Exception e) {
             out.println("<h3>Oops!</h3>");
             out.println("<p>An error occurred while processing the request.</p>");
-            out.println(e);
+            out.println("<p>Excpeption :" + e.getClass().getName() +"</p>");
+            out.println("<p>Message :" +e.getMessage() +"</p>");
         }
     }
 
