@@ -25,4 +25,8 @@ public class MySession {
     public HttpSession getSession() {
         return session;
     }
+
+    public void invalidate() {
+        session.invalidate();
+    }
 }
