@@ -5,7 +5,11 @@ import java.util.HashMap;
 public class ModelAndView {
     String url ;
     HashMap<String ,Object> data;
-    
+
+    public ModelAndView(String url, HashMap<String, Object> data) {
+        this.url = url;
+        this.data = data;
+    }
     /**
      * @return the url
      */
