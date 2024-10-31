@@ -1,39 +1,52 @@
-package util;
+package util ; 
+import java.util.HashSet;
+import java.util.Set;
 
-import java.lang.reflect.Method;
+import exception.DuplicateUrlException;
+import exception.InvalidRequestException;
+
 
 public class Mapping {
-    String className;
-    String methodName;
+    Class<?> clazz;
+    Set<VerbMethod> verbMethods = new HashSet<>();
 
-    public String getClassName() {
-        return className;
-    }
-    public void setClassName(String className) {
-        this.className = className;
-    }
-    public String getMethodName() {
-        return methodName;
-    }
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
+    // Method
+    public VerbMethod getSpecificVerbMethod(String verb) throws InvalidRequestException {
+        for(VerbMethod verbMethod : getVerbMethods()) {
+            if (verbMethod.getVerb().equalsIgnoreCase(verb)) {
+                return verbMethod;
+            }
+        }
+        throw new InvalidRequestException("Invalid request method");
     }
 
-    public Mapping(String className, String methodName) {
-        this.className = className;
-        this.methodName = methodName;
+    public void addVerbMethod(VerbMethod verbMethod) throws DuplicateUrlException {
+        if (getVerbMethods().contains(verbMethod)) {
+            throw new DuplicateUrlException("Duplicate url method!!");
+        }
+        getVerbMethods().add(verbMethod);
     }
 
-    @Override
-    public String toString() {
-        return "Mapping{className='" + className + "', methodName='" + methodName + "'}";
+    // Construtors
+    public Mapping() {}
+    public Mapping(Class<?> clazz) {
+        setClazz(clazz);
     }
 
-    public Object invokeMethod() throws Exception {
-        Class<?> clazz = Class.forName(className);
-        Method method = clazz.getDeclaredMethod(methodName);
-        Object in_stance = clazz.getDeclaredConstructor().newInstance();
-        return method.invoke(in_stance);
+    // Getters and setters
+    public Class<?> getClazz() {
+        return clazz;
     }
-   
+
+    public void setClazz(Class<?> clazz) {
+        this.clazz = clazz;
+    }
+
+    public Set<VerbMethod> getVerbMethods() {
+        return verbMethods;
+    }
+
+    public void setVerbMethods(Set<VerbMethod> verbMethods) {
+        this.verbMethods = verbMethods;
+    }
 }
