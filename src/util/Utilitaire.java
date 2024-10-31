@@ -9,10 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import annotation.Get;
-
-import exception.*;
-
 public class Utilitaire {
     public static String modifyPath(String path) {
         path = path.substring(1);
@@ -124,34 +120,34 @@ public class Utilitaire {
         return ListClasses.containsKey(url);
     }
 
-    public  HashMap<String, Mapping> getMapping(String packagename, Class<? extends Annotation> annotationClass) throws DuplicateUrlException {
-        String[] ListController = getAnnotatedClassWithin(packagename, annotationClass).split(",");
-        HashMap<String, Mapping> ListClasses = new HashMap<>();
-        for (String className : ListController) {
-            if (className.isEmpty()) {
-                continue;
-            }
-            try {
-                Class<?> clazz = Class.forName(className);
-                Method[] methods = clazz.getDeclaredMethods();
-                for (Method method : methods) {
-                    if (method.isAnnotationPresent(Get.class)) {
-                        Mapping value = new Mapping(className, method.getName());
-                        String key = method.getAnnotation(Get.class).value();
-                        if (!wasUsed(key, ListClasses)) {
-                            ListClasses.put(key, value);
-                            System.out.println("Mapped URL: " + key + " to method: " + method.getName());
-                        } else {
-                            throw new DuplicateUrlException("The url: " + key + " from " + className + " method " + method.getName() + " is already used by another class!");
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("Error processing class: " + className + " - " + e.getMessage());
-            }
-        }
-        return ListClasses;
-    }
+    // public  HashMap<String, Mapping> getMapping(String packagename, Class<? extends Annotation> annotationClass) throws DuplicateUrlException {
+    //     String[] ListController = getAnnotatedClassWithin(packagename, annotationClass).split(",");
+    //     HashMap<String, Mapping> ListClasses = new HashMap<>();
+    //     for (String className : ListController) {
+    //         if (className.isEmpty()) {
+    //             continue;
+    //         }
+    //         try {
+    //             Class<?> clazz = Class.forName(className);
+    //             Method[] methods = clazz.getDeclaredMethods();
+    //             for (Method method : methods) {
+    //                 if (method.isAnnotationPresent(Get.class)) {
+    //                     Mapping value = new Mapping(className, method.getName());
+    //                     String key = method.getAnnotation(Get.class).value();
+    //                     if (!wasUsed(key, ListClasses)) {
+    //                         ListClasses.put(key, value);
+    //                         System.out.println("Mapped URL: " + key + " to method: " + method.getName());
+    //                     } else {
+    //                         throw new DuplicateUrlException("The url: " + key + " from " + className + " method " + method.getName() + " is already used by another class!");
+    //                     }
+    //                 }
+    //             }
+    //         } catch (Exception e) {
+    //             System.out.println("Error processing class: " + className + " - " + e.getMessage());
+    //         }
+    //     }
+    //     return ListClasses;
+    // }
 
     public static String getSetterName (String fieldName) {
         return "set"+Character.toUpperCase(fieldName.charAt(0))+fieldName.substring(1) ; 

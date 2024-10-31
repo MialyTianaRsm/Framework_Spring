@@ -4,15 +4,9 @@ import java.io.File;
 import java.lang.reflect.*;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import util.Mapping;
-
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.ServletException;
-
 import annotation.Controller;
-import annotation.Mappings;
 import annotation.ReqParam;
 import annotation.ParamObject;
 
@@ -49,34 +43,34 @@ public class Function {
         return res;
     }
 
-    public HashMap<String, Mapping> scanControllersMethods(List<String> controllers) throws Exception {
-        HashMap<String, Mapping> res = new HashMap<>();
-        HashMap<String, String> urlMap = new HashMap<>(); // Pour stocker les URL déjà rencontrées
+    // public HashMap<String, Mapping> scanControllersMethods(List<String> controllers) throws Exception {
+    //     HashMap<String, Mapping> res = new HashMap<>();
+    //     HashMap<String, String> urlMap = new HashMap<>(); // Pour stocker les URL déjà rencontrées
 
-        for (String c : controllers) {
-            Class<?> clazz = Class.forName(c);
-            // get all the methods inside the class
-            Method[] meths = clazz.getDeclaredMethods();
-            for (Method method : meths) {
-                if (method.isAnnotationPresent(Mappings.class)) {
-                    String url = method.getAnnotation(Mappings.class).url();
-                    // Vérifier si l'URL est déjà présente dans la map
-                    if (urlMap.containsKey(url)) {
-                        String method_present = urlMap.get(url);
-                        String new_method = clazz.getName() + ":" + method.getName();
-                        throw new Exception("L'URL " + url + " est déjà mappée sur " + method_present
-                                + " et ne peut pas être mappée sur " + new_method + " de nouveau.");
-                    } else {
-                        // Si l'URL n'est pas déjà présente, l'ajouter à la map
-                        urlMap.put(url, clazz.getName() + ":" + method.getName());
-                        // get the annotation
-                        res.put(url, new Mapping(c, method.getName()));
-                    }
-                }
-            }
-        }
-        return res;
-    }
+    //     for (String c : controllers) {
+    //         Class<?> clazz = Class.forName(c);
+    //         // get all the methods inside the class
+    //         Method[] meths = clazz.getDeclaredMethods();
+    //         for (Method method : meths) {
+    //             if (method.isAnnotationPresent(Mappings.class)) {
+    //                 String url = method.getAnnotation(Mappings.class).url();
+    //                 // Vérifier si l'URL est déjà présente dans la map
+    //                 if (urlMap.containsKey(url)) {
+    //                     String method_present = urlMap.get(url);
+    //                     String new_method = clazz.getName() + ":" + method.getName();
+    //                     throw new Exception("L'URL " + url + " est déjà mappée sur " + method_present
+    //                             + " et ne peut pas être mappée sur " + new_method + " de nouveau.");
+    //                 } else {
+    //                     // Si l'URL n'est pas déjà présente, l'ajouter à la map
+    //                     urlMap.put(url, clazz.getName() + ":" + method.getName());
+    //                     // get the annotation
+    //                     res.put(url, new Mapping(c, method.getName()));
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return res;
+    // }
 
     public String getURIWithoutContextPath(HttpServletRequest request) {
         return request.getRequestURI().substring(request.getContextPath().length());
