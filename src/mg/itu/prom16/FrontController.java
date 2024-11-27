@@ -27,9 +27,8 @@ public class FrontController extends HttpServlet {
         } catch (UrlNotFoundException | IllegalReturnTypeExcpetion e) {
             ExceptionHandler.handleException(e, response);
         } catch (Exception e) {
-            ExceptionHandler.handleException(
-                    new Exception(e.getMessage()), response);
-        }
+             ExceptionHandler.handleException(e, response);
+        } 
     }
 
     // Override methods
