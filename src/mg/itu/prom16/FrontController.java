@@ -3,18 +3,19 @@ package mg.itu.prom16;
 import java.io.IOException;
 import java.util.Map;
 
-import exception.DuplicateUrlException;
-import exception.ExceptionHandler;
-import exception.IllegalReturnTypeExcpetion;
-import exception.InvalidControllerProviderException;
-import exception.UrlNotFoundException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import util.MainProcess;
-import util.Mapping;
 
+import exception.DuplicateUrlException;
+import exception.IllegalReturnTypeExcpetion;
+import exception.InvalidControllerProviderException;
+import exception.UrlNotFoundException;
+import handler.ExceptionHandler;
+
+@MultipartConfig
 public class FrontController extends HttpServlet {
     private Map<String, Mapping> URLMappings;
     private Exception exception = null;
@@ -27,8 +28,8 @@ public class FrontController extends HttpServlet {
         } catch (UrlNotFoundException | IllegalReturnTypeExcpetion e) {
             ExceptionHandler.handleException(e, response);
         } catch (Exception e) {
-             ExceptionHandler.handleException(e, response);
-        } 
+            ExceptionHandler.handleException(e, response);
+        }
     }
 
     // Override methods
@@ -38,10 +39,11 @@ public class FrontController extends HttpServlet {
             processRequest(req, resp);
         } catch (ServletException e) {
             ExceptionHandler.handleException(
-                    new Exception("A servlet error has occured while executing doGet method", e.getCause()), resp);
+                    new ServletException("A servlet error has occured while executing doGet method", e.getCause()),
+                    resp);
         } catch (IOException e) {
             ExceptionHandler.handleException(
-                    new Exception("An IO error has occured while executing doGet method", e.getCause()), resp);
+                    new IOException("An IO error has occured while executing doGet method", e.getCause()), resp);
         }
     }
 
@@ -51,10 +53,11 @@ public class FrontController extends HttpServlet {
             processRequest(req, resp);
         } catch (ServletException e) {
             ExceptionHandler.handleException(
-                    new Exception("A servlet error has occured while executing doPost method", e.getCause()), resp);
+                    new ServletException("A servlet error has occured while executing doPost method", e.getCause()),
+                    resp);
         } catch (IOException e) {
             ExceptionHandler.handleException(
-                    new Exception("An IO error has occured while executing doPost method", e.getCause()), resp);
+                    new IOException("An IO error has occured while executing doPost method", e.getCause()), resp);
         }
     }
 

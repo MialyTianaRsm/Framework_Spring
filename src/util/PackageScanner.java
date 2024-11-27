@@ -7,17 +7,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import annotation.Controller;
+import annotation.*;
 import annotation.request.URL;
-import exception.DuplicateUrlException;
-import exception.InvalidControllerProviderException;
+import data.RequestVerb;
+import data.VerbMethod;
+import mg.itu.prom16.*;
+import exception.*;
 
 public class PackageScanner {
     private PackageScanner() {
     }
 
     public static Map<String, Mapping> scanPackage(String packageName)
-            throws ClassNotFoundException, IOException, DuplicateUrlException, InvalidControllerProviderException{
+            throws ClassNotFoundException, IOException, DuplicateUrlException, InvalidControllerProviderException {
         if (packageName == null || packageName.isBlank()) {
             throw new InvalidControllerProviderException("Controller package provider cannot be null");
         }

@@ -1,27 +1,28 @@
-package util;
-
-
+package mg.itu.prom16;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
+
+import java.util.List;
 
 import com.google.gson.Gson;
 
+import data.VerbMethod;
+import data.ModelAndView;
 import exception.AnnotationNotPresentException;
 import exception.DuplicateUrlException;
-import exception.ExceptionHandler;
+import exception.IllegalReturnTypeExcpetion;
 import exception.InvalidControllerProviderException;
 import exception.InvalidRequestException;
-import exception.IllegalReturnTypeExcpetion;
 import exception.UrlNotFoundException;
+import handler.ExceptionHandler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import mg.itu.prom16.FrontController;
+import util.PackageScanner;
+import util.ReflectUtils;
 
 public class MainProcess {
     static FrontController frontController;
@@ -69,14 +70,14 @@ public class MainProcess {
         if (result instanceof String) {
             out.println(result.toString());
         } else if (result instanceof ModelAndView) {
-            ModelAndView ModelAndView = ((ModelAndView) result);
-            HashMap<String, Object> data = ((HashMap<String, Object>)ModelAndView.getData());
+            ModelAndView modelAndView = ((ModelAndView) result);
+            HashMap<String, Object> data = ((HashMap<String, Object>)modelAndView.getData());
 
             for (Entry<String, Object> entry : data.entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
             }
 
-            request.getRequestDispatcher(ModelAndView.getUrl()).forward(request, response);
+            request.getRequestDispatcher(modelAndView.getUrl()).forward(request, response);
         } else {
             throw new IllegalReturnTypeExcpetion("Invalid return type");
         }

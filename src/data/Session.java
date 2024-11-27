@@ -1,4 +1,5 @@
-package util;
+
+package data;
 
 import jakarta.servlet.http.HttpSession;
 
