@@ -8,6 +8,7 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 import annotation.Controller;
 import annotation.ReqParam;
+import data.Session;
 import annotation.ParamObject;
 
 public class Function {
@@ -107,8 +108,8 @@ public class Function {
         Object[] parameterValues = new Object[parameters.length];
 
         for (int i = 0; i < parameters.length; i++) {
-            if (parameters[i].getType().equals(MySession.class)) {
-                parameterValues[i] = new MySession(request.getSession());
+            if (parameters[i].getType().equals(Session.class)) {
+                parameterValues[i] = new Session(request.getSession());
             } else if (parameters[i].isAnnotationPresent(annotationClass)) {
                 ReqParam param = parameters[i].getAnnotation(annotationClass);
                 String paramName = param.value();

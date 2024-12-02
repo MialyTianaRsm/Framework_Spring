@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import mg.itu.prom16.Mapping;
+
 public class Utilitaire {
     public static String modifyPath(String path) {
         path = path.substring(1);

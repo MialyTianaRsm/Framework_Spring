@@ -1,4 +1,4 @@
-package exception;
+package handler;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import exception.UrlNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class ExceptionHandler {
