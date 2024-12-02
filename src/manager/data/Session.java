@@ -1,5 +1,5 @@
 
-package data;
+package manager.data;
 
 import jakarta.servlet.http.HttpSession;
 

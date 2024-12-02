@@ -1,4 +1,4 @@
-package exception;
+package manager.exception;
 
 public class AnnotationNotPresentException extends Exception{
     public AnnotationNotPresentException(String message) {
