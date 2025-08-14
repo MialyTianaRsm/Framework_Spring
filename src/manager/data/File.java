@@ -1,7 +1,8 @@
-package data;
+package manager.data;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import util.FileUtils;
 
 public class File {

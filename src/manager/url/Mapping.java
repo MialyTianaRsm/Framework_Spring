@@ -1,11 +1,11 @@
-package mg.itu.prom16;
+package manager.url;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import data.VerbMethod;
-import exception.DuplicateUrlException;
-import exception.InvalidRequestException;
+import manager.data.VerbMethod;
+import manager.exception.DuplicateUrlException;
+import manager.exception.InvalidRequestException;
 
 public class Mapping {
     Class<?> clazz;

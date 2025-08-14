@@ -9,10 +9,12 @@ import java.util.Map;
 
 import annotation.*;
 import annotation.request.URL;
-import data.RequestVerb;
-import data.VerbMethod;
 import mg.itu.prom16.*;
 import exception.*;
+import manager.data.RequestVerb;
+import manager.data.VerbMethod;
+import manager.exception.DuplicateUrlException;
+import manager.exception.InvalidControllerProviderException;
 
 public class PackageScanner {
     private PackageScanner() {
