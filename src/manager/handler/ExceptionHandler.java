@@ -1,4 +1,4 @@
-package handler;
+package manager.handler;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import exception.UrlNotFoundException;
+import manager.*;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class ExceptionHandler {
@@ -75,6 +75,8 @@ public class ExceptionHandler {
                 int errorCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
                 if (e instanceof UrlNotFoundException) {
                     errorCode = HttpServletResponse.SC_NOT_FOUND;
+                } else if (e instanceof UnauthorizedAccessException) {
+                    errorCode = HttpServletResponse.SC_UNAUTHORIZED;
                 }
                 processError(response, errorCode, e);
             }

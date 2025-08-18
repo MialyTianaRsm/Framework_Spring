@@ -12,18 +12,24 @@ import java.util.HashMap;
 import java.util.List;
 
 import annotation.*;
-import data.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import annotation.ReqParam;
+import manager.data.File;
+import manager.data.Session;
 
 public class ObjectUtils {
     private ObjectUtils() {
     }
 
+    public static boolean isClassModel(Class<?> type) {
+        return !ObjectUtils.isPrimitive(type) && !type.equals(Session.class) && !type.equals(File.class);
+    }
+
     public static Object getParameterInstance(HttpServletRequest request, Parameter parameter, Class<?> clazz,
             Object object)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException,
-            NoSuchFieldException, IOException, ServletException {
+            IOException, ServletException, IllegalArgumentException, SecurityException {
         String strValue;
 
         ReqParam annotatedType = parameter.getAnnotation(ReqParam.class);
@@ -46,49 +52,37 @@ public class ObjectUtils {
         } else if (clazz.equals(File.class)) {
             object = FileUtils.createRequestFile(annotationValue, request);
         } else {
-            
-            if (parameter.isAnnotationPresent(ReqParam.class)) {
-                object = ObjectUtils.getObjectInstance(clazz, annotationValue, request);
-            }
+            object = ObjectUtils.getObjectInstance(clazz, annotationValue, request);
         }
         return object;
     }
 
-    private static void setObjectAttributesValues(Object instance, String attributeName, String value)
-            throws NoSuchFieldException, SecurityException, NoSuchMethodException, IllegalAccessException,
+    private static void setObjectAttributesValues(Object instance, Field field, String value)
+            throws SecurityException, NoSuchMethodException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
-        Field field = instance.getClass().getDeclaredField(attributeName);
 
         Object fieldValue = castObject(value, field.getType());
-        String setterMethodName = ReflectUtils.getSetterMethod(attributeName);
+        String setterMethodName = ReflectUtils.getSetterMethod(field.getName());
         Method method = instance.getClass().getMethod(setterMethodName, field.getType());
         method.invoke(instance, fieldValue);
     }
 
     public static Object getObjectInstance(Class<?> classType, String annotationValue, HttpServletRequest request)
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException, NoSuchFieldException {
+            NoSuchMethodException, SecurityException {
         Object instance = classType.getConstructor().newInstance();
+        Field[] fields = classType.getDeclaredFields();
 
-        Enumeration<String> requestParams = request.getParameterNames();
-
-        String attributeName = null;
         String className = null;
-        String requestParamName = null;
-        String regex = null;
-        String[] splitParamName = null;
+        String paramName = null;
 
-        className = annotationValue.split("\\.")[0];
-        regex = className + ".*";
+        className = annotationValue.split("\\.")[0] + ".";
 
-        while (requestParams.hasMoreElements()) {
-            requestParamName = requestParams.nextElement();
-            splitParamName = requestParamName.split("\\.");
-
-            if (requestParamName.matches(regex) && splitParamName.length >= 2) {
-                attributeName = splitParamName[1];
-                setObjectAttributesValues(instance, attributeName, request.getParameter(requestParamName));
-            }
+        for (Field field : fields) {
+            paramName = className + field.getName();
+            String value = request.getParameter(paramName);
+            
+            setObjectAttributesValues(instance, field, value);
         }
 
         return instance;
@@ -103,6 +97,8 @@ public class ObjectUtils {
             return Double.parseDouble(value);
         } else if (clazz == Float.TYPE) {
             return Float.parseFloat(value);
+        } else if (clazz == Date.class) {
+            return Date.valueOf(LocalDate.parse(value));
         } else {
             return value;
         }
