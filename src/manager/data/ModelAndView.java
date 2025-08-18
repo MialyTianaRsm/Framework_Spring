@@ -8,6 +8,7 @@ import java.util.Map;
 public class ModelAndView {
     String url;
     Map<String, Object> data = new HashMap<>();
+    boolean redirect = false;
 
     // Class method
     public void addObject(String attribute, Object object) {
@@ -15,10 +16,10 @@ public class ModelAndView {
     }
 
     // Constructor
-    public ModelAndView() {
+    public ModelView() {
     }
 
-    public ModelAndView(String url, Map<String, Object> data) {
+    public ModelView(String url, Map<String, Object> data) {
         setUrl(url);
         setData(data);
     }
@@ -35,5 +36,13 @@ public class ModelAndView {
     }
     public void setData(Map<String, Object> data) {
         this.data = data;
+    }
+
+    public boolean isRedirect() {
+        return redirect;
+    }
+
+    public void setRedirect(boolean redirect) {
+        this.redirect = redirect;
     }
 }
