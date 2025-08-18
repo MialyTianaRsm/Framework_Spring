@@ -17,8 +17,11 @@ import util.validation.validator.NumericValidator;
 import util.validation.validator.RequiredValidator;
 
 public class ValidatorRegistry {
-    private static final Map<Class<?extends Annotation>, FieldValidator> validators = new HashMap<>();
-    
+    private ValidatorRegistry() {
+    }
+
+    private static final Map<Class<? extends Annotation>, FieldValidator> validators = new HashMap<>();
+
     static {
         validators.put(Length.class, new LengthValidator());
         validators.put(DateType.class, new DateValidator());
@@ -26,8 +29,12 @@ public class ValidatorRegistry {
         validators.put(Required.class, new RequiredValidator());
         validators.put(Numeric.class, new NumericValidator());
     }
-    
-    public static FieldValidator getValidator(Class<?extends Annotation> annotation) {
-        return validators.get(annotation);
+
+    public static FieldValidator getValidator(Class<? extends Annotation> annotation) {
+        FieldValidator validator = validators.get(annotation);
+        if (validator == null) {
+            validator = new NeutralValidator();
+        }
+        return validator;
     }
 }
