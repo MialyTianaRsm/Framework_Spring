@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import annotation.*;
-import data.Session;
+import manager.data.Session;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import mg.itu.prom16.Mapping;
-import exception.*;
+import manager.exception.*;
+import manager.url.Mapping;
 
 public class ReflectUtils {
     private ReflectUtils() {
@@ -49,8 +49,8 @@ public class ReflectUtils {
 
     public static Object executeRequestMethod(Mapping mapping, HttpServletRequest request, String verb)
             throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchFieldException,
-            AnnotationNotPresentException, InvalidRequestException, IOException, ServletException {
+            InvocationTargetException, InstantiationException,
+            AnnotationNotPresentException, InvalidRequestException, IOException, ServletException, ModelValidationException {
         List<Object> objects = new ArrayList<>();
 
         Class<?> objClass = mapping.getClazz();
@@ -64,7 +64,7 @@ public class ReflectUtils {
             Object object = ObjectUtils.getDefaultValue(clazz);
             if (!parameter.isAnnotationPresent(ReqParam.class) && !clazz.equals(Session.class)) {
                 throw new AnnotationNotPresentException(
-                        "One of you parameter require `@RequestParameter` annotation");
+                        "One of you parameter require `@ReqParam` annotation");
             }
 
             object = ObjectUtils.getParameterInstance(request, parameter, clazz, object);

@@ -9,23 +9,27 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import exception.DuplicateUrlException;
-import exception.IllegalReturnTypeExcpetion;
-import exception.InvalidControllerProviderException;
-import exception.UrlNotFoundException;
-import handler.ExceptionHandler;
+import mg.emberframework.manager.MainProcess;
+import mg.emberframework.manager.data.InitParameter;
+import mg.emberframework.manager.exception.DuplicateUrlException;
+import mg.emberframework.manager.exception.IllegalReturnTypeException;
+import mg.emberframework.manager.exception.InvalidControllerPackageException;
+import mg.emberframework.manager.exception.UrlNotFoundException;
+import mg.emberframework.manager.handler.ExceptionHandler;
+import mg.emberframework.manager.url.Mapping;
 
 @MultipartConfig
 public class FrontController extends HttpServlet {
     private Map<String, Mapping> URLMappings;
     private Exception exception = null;
+    private InitParameter initParameter;
 
     // Class methods
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             MainProcess.handleRequest(this, request, response);
-        } catch (UrlNotFoundException | IllegalReturnTypeExcpetion e) {
+        } catch (UrlNotFoundException | IllegalReturnTypeException e) {
             ExceptionHandler.handleException(e, response);
         } catch (Exception e) {
             ExceptionHandler.handleException(e, response);
@@ -65,7 +69,7 @@ public class FrontController extends HttpServlet {
     public void init() throws ServletException {
         try {
             MainProcess.init(this);
-        } catch (InvalidControllerProviderException | DuplicateUrlException e) {
+        } catch (InvalidControllerPackageException | DuplicateUrlException e) {
             setException(e);
         } catch (Exception e) {
             setException(new Exception("An error has occured during initialization + " + e.getMessage(), e.getCause()));
@@ -87,5 +91,13 @@ public class FrontController extends HttpServlet {
 
     public void setException(Exception exception) {
         this.exception = exception;
+    }
+
+    public InitParameter getInitParameter() {
+        return initParameter;
+    }
+
+    public void setInitParameter(InitParameter initParameter) {
+        this.initParameter = initParameter;
     }
 }
